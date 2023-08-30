@@ -10,12 +10,12 @@ connectDB();
 const app = express();
 
 // Middlewares
-app.use(
-  cors({
-    origin: ["https://tribackoffice.vercel.app", "http://localhost:3000"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://tribackoffice.vercel.app", "http://localhost:3000"],
+//     credentials: true,
+//   })
+// );
 // Middleware to set up CORS headers
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://tribackoffice.vercel.app");
