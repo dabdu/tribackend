@@ -6,6 +6,7 @@ const restaurantSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      unique: true,
     },
     restaurantName: {
       type: String,
@@ -47,6 +48,10 @@ const restaurantSchema = mongoose.Schema(
     },
     terms: {
       type: String,
+    },
+    resStatus: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

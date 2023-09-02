@@ -31,30 +31,40 @@ const onApproveResAdmin = asyncHandler(async (req, res) => {
   );
   res.status(201).send({ message: "User Status Changed Successfully" });
 });
-// const onDeactivateResAdmin = asyncHandler(async (req, res) => {
-//   const { userID } = req.body;
+const onDeactivateResAdmin = asyncHandler(async (req, res) => {
+  const { userID } = req.body;
 
-//   if (!userID) {
-//     res.status(400);
-//     throw new Error("Inavlid User");
-//   }
-//   const user = await User.findByIdAndUpdate(
-//     userID,
-//     { userStatus: "active" },
-//     {
-//       new: true,
-//     }
-//   );
-//   // send Login credential to USer primaryEmail
-//   const splited = user?.name?.split(" ");
-//   const password = splited[0].toLowerCase() + "20";
-//   await sendMailFunction(
-//     `${user.email}`,
-//     "Account Approved",
-//     `Dear Esteemed Vendor, your account has been approved, and these are you login credentials, Email: ${user.email} and password: ${password}. Once you Logged in you can add your restaurant details and add dishes to your restuarant, you welcome onboard. Thanks, Triluxy.`
-//   );
-//   res.status(201).send({ message: "User Status Changed Successfully" });
-// });
+  if (!userID) {
+    res.status(400);
+    throw new Error("Inavlid User");
+  }
+  const getUser = await User.findByIdAndUpdate(
+    userID,
+    { userStatus: "DEACTIVATED" },
+    {
+      new: true,
+    }
+  );
+  console.log(getUser._id.toString());
+  const restaurant = await Restaurant.findOne({
+    user: getUser._id,
+  });
+  console.log(restaurant);
+  await Restaurant.findByIdAndUpdate(
+    restaurant._id,
+    { resStatus: "DEACTIVATED" },
+    {
+      new: true,
+    }
+  );
+  // send login
+  await sendMailFunction(
+    `${getUser.email}`,
+    "Account Deactivated",
+    `Dear Esteemed Vendor, your account has been Deactivated, you can't have access to your account, and you items won't be visible on the App, contact the Administrator for further clarity. Thanks, Triluxy.`
+  );
+  res.status(201).send({ message: "User Account Deactivated Successfully" });
+});
 const GetAllRestaurantAdmins = asyncHandler(async (req, res) => {
   const admins = await User.find({
     userRole: "resAdmin",
@@ -139,4 +149,5 @@ module.exports = {
   onApproveResAdmin,
   GetSingleReservation,
   GetSingleOrder,
+  onDeactivateResAdmin,
 };
