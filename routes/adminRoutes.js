@@ -11,6 +11,7 @@ const {
   GetSingleReservation,
   GetSingleOrder,
   onDeactivateResAdmin,
+  onReactivateResAdmin,
 } = require("../controllers/admin/restaurantController");
 const {
   getDeliveryCharges,
@@ -25,6 +26,7 @@ router.post("/login", adminLogin);
 // Restraurant Routes
 router.put("/restaurant/approve-admin", onApproveResAdmin);
 router.put("/restaurant/deactivate-admin", onDeactivateResAdmin);
+router.put("/restaurant/reactivate-admin", onReactivateResAdmin);
 router.get("/res-admin", adminProtect, GetAllRestaurantAdmins);
 router.get("/restaurants", adminProtect, GetAllRestaurants);
 router.get("/dishes", adminProtect, GetAllMenuItems);

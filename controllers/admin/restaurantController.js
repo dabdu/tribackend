@@ -16,7 +16,7 @@ const onApproveResAdmin = asyncHandler(async (req, res) => {
   }
   const user = await User.findByIdAndUpdate(
     userID,
-    { userStatus: "active" },
+    { userStatus: "ACTIVE" },
     {
       new: true,
     }
@@ -64,6 +64,38 @@ const onDeactivateResAdmin = asyncHandler(async (req, res) => {
     `Dear Esteemed Vendor, your account has been Deactivated, you can't have access to your account, and you items won't be visible on the App, contact the Administrator for further clarity. Thanks, Triluxy.`
   );
   res.status(201).send({ message: "User Account Deactivated Successfully" });
+});
+const onReactivateResAdmin = asyncHandler(async (req, res) => {
+  const { userID } = req.body;
+
+  if (!userID) {
+    res.status(400);
+    throw new Error("Inavlid User");
+  }
+  const getUser = await User.findByIdAndUpdate(
+    userID,
+    { userStatus: "ACTIVE" },
+    {
+      new: true,
+    }
+  );
+  const restaurant = await Restaurant.findOne({
+    user: getUser._id,
+  });
+  await Restaurant.findByIdAndUpdate(
+    restaurant._id,
+    { resStatus: "ACTIVE" },
+    {
+      new: true,
+    }
+  );
+  // send login
+  await sendMailFunction(
+    `${getUser.email}`,
+    "Account Reactivated",
+    `Dear Esteemed Vendor, the ban on your account has been lifted, you can not have access to your account, and you items will be visible on the App, You are welcome back on board. Thanks, Triluxy.`
+  );
+  res.status(201).send({ message: "User Account Reactivated Successfully" });
 });
 const GetAllRestaurantAdmins = asyncHandler(async (req, res) => {
   const admins = await User.find({
@@ -150,4 +182,5 @@ module.exports = {
   GetSingleReservation,
   GetSingleOrder,
   onDeactivateResAdmin,
+  onReactivateResAdmin,
 };
