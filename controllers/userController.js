@@ -29,7 +29,7 @@ const onBoardResAdmin = asyncHandler(async (req, res) => {
     email,
     phoneNumber,
     userRole: "resAdmin",
-    userStatus: "pending",
+    userStatus: "PENDING",
     password: hashedpassword,
     profileImg:
       "https://res.cloudinary.com/dc5ulgooc/image/upload/v1679504085/403554_ib5oa4.png",
