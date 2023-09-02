@@ -116,9 +116,14 @@ const loginUser = asyncHandler(async (req, res) => {
   //   User Check
   const user = await User.findOne({ email });
 
-  if (user?.userStatus === "pending") {
+  if (user?.userStatus === "PENDING") {
     res.status(400);
-    throw new Error("User Account Not Active");
+    throw new Error("Your Account is Pending Approval");
+  } else if (user?.userStatus === "DEACTIVATED") {
+    res.status(400);
+    throw new Error(
+      "Your Account has been Deactivated, Please Contact Our Support Center"
+    );
   } else {
     if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
