@@ -49,6 +49,7 @@ const adminAddrestaurant = asyncHandler(async (req, res) => {
     lng,
     description,
     terms,
+    resStatus: "ACTIVE",
   });
   res.status(201).json(restaurant);
 });
