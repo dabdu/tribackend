@@ -233,12 +233,48 @@ const addMenuItem = asyncHandler(async (req, res) => {
   res.status(201).json(menu_item);
 });
 const getDishByLocation = asyncHandler(async (req, res) => {
-  const menu_items = await ResMenuItem.find({
+  // const menu_items = await ResMenuItem.find({
+  //   location: req.params.location,
+  // }).sort({
+  //   createdAt: -1,
+  // });
+  const menu_items = await ResMenuItem.aggregate([
+    {
+      $lookup: {
+        from: "restaurants", // The name of the Restaurant collection
+        localField: "restaurantId",
+        foreignField: "_id",
+        as: "restaurant",
+      },
+    },
+    {
+      $unwind: "$restaurant", // Unwind the restaurant array
+    },
+    {
+      $match: {
+        "restaurant.resStatus": "ACTIVE", // Filter based on the resStatus field
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
+  // Now, menu_items contains only menu items from active restaurants
+
+  res.status(200).json(menu_items);
+});
+const getRestaurantByLocation = asyncHandler(async (req, res) => {
+  const restaurants = await Restaurant.find({
     location: req.params.location,
+    resStatus: "ACTIVE",
   }).sort({
     createdAt: -1,
   });
-  res.status(200).json(menu_items);
+  // Now, restaurants contains only menu items from active restaurants
+
+  res.status(200).json(restaurants);
 });
 const getRestaurantMenuItems = asyncHandler(async (req, res) => {
   const menu_items = await ResMenuItem.find({
@@ -429,6 +465,7 @@ module.exports = {
   adminGetAllReservations,
   addNewReservation,
   getUserReservations,
+  getRestaurantByLocation,
   addMenuItem,
   getRestaurantMenuItems,
   getAdminRestaurant,
