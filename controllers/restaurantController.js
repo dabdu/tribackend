@@ -253,6 +253,7 @@ const getDishByLocation = asyncHandler(async (req, res) => {
     {
       $match: {
         "restaurant.resStatus": "ACTIVE", // Filter based on the resStatus field
+        "restaurant.town": req.params.location, // Filter based on the location
       },
     },
     {
@@ -261,6 +262,8 @@ const getDishByLocation = asyncHandler(async (req, res) => {
       },
     },
   ]);
+
+  // Now, menu_items contains only menu items from active restaurants within the specified location
   // Now, menu_items contains only menu items from active restaurants
 
   res.status(200).json(menu_items);
